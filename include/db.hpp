@@ -16,6 +16,10 @@
 #define SQLITE3_API
 #endif
 
+#ifdef _MSC_VER
+#pragma warning(disable:4996)
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
