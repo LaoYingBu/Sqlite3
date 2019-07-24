@@ -1,10 +1,11 @@
 #设置项目的第三方库的inculde和lib
 if(MSVC)
-    set(sqlite3 "E:\\Vcpkg\\vcpkg\\packages\\sqlite3_x86-windows" CACHE SRRING "include path")
+    set(sqlite3 "E:\\Vcpkg\\vcpkg\\packages\\sqlite3_x64-windows" CACHE SRRING "include path")
     include_directories(${sqlite3}/include)
     link_directories(${sqlite3}/lib)
     list(APPEND SQLITE3_LINKER_LIBS sqlite3)
 endif()
+
 
 #整理源文件结构
 file(GLOB SQLITE3_INCLUDE ${CMAKE_CURRENT_LIST_DIR}/include/*.hpp

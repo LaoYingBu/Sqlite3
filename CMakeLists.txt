@@ -10,4 +10,4 @@ include(cv.cmake)
 
 add_executable(main main.cpp)
 
-target_link_libraries(main db)   
+target_link_libraries(main db cv)   

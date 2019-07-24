@@ -13,7 +13,7 @@ int main()
     result = sqlite3_demo(db_name);
     printf("sqlite2 exe return code: %d\n", result);
 
-    char* filename = "C:/digits_tsne-generated.png";
+    char* filename = "finger.bmp";
     cv_demo(filename);
     system("pause");
     return 0;
