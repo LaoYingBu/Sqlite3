@@ -1,5 +1,5 @@
 if(MSVC)
-    set(OpenCV_DIR "E:\\opencv_2413\\build")
+    set(OpenCV_DIR "E:\\opencv_3300\\source.build\\install")
     #set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${OpenCV_DIR})
     #set(CMAKE_PREFIX_PATH ${OpenCV_DIR})
     
@@ -8,8 +8,8 @@ if(MSVC)
     #                                         IMPORTED_LOCATION ${OpenCV_DIR}/x64/vc12/lib/opencv_highgui2413.lib)
 
     include_directories(${OpenCV_DIR}/include)
-    link_directories(${OpenCV_DIR}\\x64\\vc12\\lib)
-    list(APPEND CV_LINKER_LIBS opencv_core2413 opencv_imgproc2413 opencv_highgui2413)
+    link_directories(${OpenCV_DIR}\\x64\\vc14\\lib)
+    list(APPEND CV_LINKER_LIBS opencv_world330.lib)
 
 endif()
 

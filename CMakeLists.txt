@@ -7,6 +7,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 include(db.cmake)
 include(cv.cmake)
+include(ncnn.cmake)
 
 add_executable(main main.cpp)
 

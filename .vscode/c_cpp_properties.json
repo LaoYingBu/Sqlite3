@@ -5,7 +5,8 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "${vcpkgRoot}/x86-windows/include",
-                "E:/opencv_2413/build/include"
+                "E:/opencv_3300/source.build/install/include",
+                "E:/InferenceCNN/ncnn/out/install/x64-Release/include"
             ],
             "defines": [
                 "_DEBUG",
