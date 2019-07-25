@@ -2,8 +2,14 @@
 #define __CV_HPP__
 
 #include <stdio.h>
+#include <string>
 #include <opencv2/opencv.hpp>
-using namespace cv;
+
+#ifdef _WIN32
+#include <windows.h>
+#else
+#include <unistd.h>
+#endif
 
 #ifdef _MSC_VER
 #ifdef CV_EXPORT

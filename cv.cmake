@@ -1,5 +1,5 @@
 if(MSVC)
-    set(OpenCV_DIR "E:\\opencv_3300\\source.build\\install")
+    set(OpenCV_DIR "E:\\opencv_4100\\opencv\\build")
     #set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${OpenCV_DIR})
     #set(CMAKE_PREFIX_PATH ${OpenCV_DIR})
     
@@ -9,7 +9,7 @@ if(MSVC)
 
     include_directories(${OpenCV_DIR}/include)
     link_directories(${OpenCV_DIR}\\x64\\vc14\\lib)
-    list(APPEND CV_LINKER_LIBS opencv_world330.lib)
+    list(APPEND CV_LINKER_LIBS opencv_world410.lib)
 
 endif()
 

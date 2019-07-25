@@ -1,6 +1,6 @@
 #include "include/ncnn.hpp"
 
-int detect_net(const cv::Mat& bgr, std::vector<float>& cls_scores)
+static int ncnn_detect_net(const cv::Mat& bgr, std::vector<float>& cls_scores)
 {
     ncnn::Net net;
     #ifdef NCNN_VULKAN
@@ -8,18 +8,52 @@ int detect_net(const cv::Mat& bgr, std::vector<float>& cls_scores)
     #endif
     net.load_param("net.param");
     net.load_model("net.bin");
-    ncnn::Mat in = ncnn::Mat::from_pixels_resize(bgr.data, ncnn::Mat::PIXEL_BGR2GRAY, bgr.cols, bgr.rows, 112, 112);
-    ncnn::Extractor ex = net.create_extractor();
-    ex.input("data", in);
-    ncnn::Mat out;
-    ex.extract("out", out);
+    ncnn::Mat in = ncnn::Mat::from_pixels_resize(bgr.data, ncnn::Mat::PIXEL_GRAY2BGR, bgr.cols, bgr.rows, 227, 227);
+    const float norm_vals[3] = {1/255.f, 1/255.f, 1/255.f}; 
+    in.substract_mean_normalize(0, norm_vals);
+
+    // cooling soc
+    Sleep(10*1000);
+    // warmup
+    for (int i = 0; i < 10; i++)
     {
-        ncnn::Layer* softmax = ncnn::create_layer("softmax");
-        ncnn::ParamDict pd;
-        softmax->load_param(pd);
-        softmax->forward_inplace(out);
-        delete softmax;
+        ncnn::Extractor ex = net.create_extractor();
+        ex.input("data", in);
+        ncnn::Mat out;
+        ex.extract("pool10", out);
+        {
+            ncnn::Layer* softmax = ncnn::create_layer("Softmax");
+            ncnn::ParamDict pd;
+            softmax->load_param(pd);
+            softmax->forward_inplace(out);
+            delete softmax;
+        }
     }
+
+    double time_min = DBL_MAX, time_max = -DBL_MAX, time_ave = 0;
+    ncnn::Mat out;
+    for (int i = 0; i < 10; i++)
+    {
+       double start = ncnn::get_current_time(); 
+       ncnn::Extractor ex = net.create_extractor();
+        ex.input("data", in);
+        ex.extract("pool10", out);
+        {
+            ncnn::Layer* softmax = ncnn::create_layer("Softmax");
+            ncnn::ParamDict pd;
+            softmax->load_param(pd);
+            softmax->forward_inplace(out);
+            delete softmax;
+        }
+       double end = ncnn::get_current_time();
+       double time = end - start;
+       time_min = min(time_min, time);
+       time_max = max(time_max, time);
+       time_ave += time;
+    }
+    time_ave /= 10;
+    fprintf(stdout, "%20s   min = %7.2f max = %7.2f ave = %7.2f\n", "net", time_min, time_max, time_ave);
+    
     cls_scores.resize(out.w);
     for (int i = 0; i < out.w; i++)
     {
@@ -28,7 +62,7 @@ int detect_net(const cv::Mat& bgr, std::vector<float>& cls_scores)
     return 0;
 }
 
-int print_topk(const std::vector<float>& cls_score, int topk)
+static int ncnn_print_topk(const std::vector<float>& cls_score, int topk)
 {
     int size = cls_score.size();
     std::vector<std::pair<float, int>> vec;
@@ -55,10 +89,17 @@ int ncnn_demo(char* filename)
     #if NCNN_VULKAN
     ncnn::create_gpu_instance();
     #endif
+
+    ncnn::Option opt;
+    opt.lightmode = true;
+    opt.num_threads = 2;
+    opt.use_winograd_convolution = true;
+    opt.use_sgemm_convolution =true;
+
     std::vector<float> cls_scores;
-    detect_net(im, cls_scores);
+    ncnn_detect_net(im, cls_scores);
     #if NCNN_VULKAN
     ncnn::destroy_gpu_instance();
     #endif
-    print_topk(cls_scores, 3);
+    ncnn_print_topk(cls_scores, 3);
 }

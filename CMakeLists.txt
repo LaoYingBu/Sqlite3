@@ -11,4 +11,4 @@ include(ncnn.cmake)
 
 add_executable(main main.cpp)
 
-target_link_libraries(main db cv)   
+target_link_libraries(main db cv ncnnlib)   

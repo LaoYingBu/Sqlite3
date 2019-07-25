@@ -5,10 +5,10 @@ if(MSVC)
     # set_target_properties(ncnn PROPERTIES IMPORTED_LOCATION ${NCNN_DIR}\\lib\\ncnn.lib)
     link_directories(${NCNN_DIR}\\lib)
 
-    set(OpenCV_DIR "E:\\opencv_3300\\source.build\\install")
+    set(OpenCV_DIR "E:\\opencv_4100\\opencv\\build")
     include_directories(${OpenCV_DIR}/include)
     link_directories(${OpenCV_DIR}\\x64\\vc14\\lib)
-    list(APPEND NCNN_LINKER_LIBS opencv_world330.lib ncnn.lib)
+    list(APPEND NCNN_LINKER_LIBS opencv_world410.lib ncnn)
 
 endif()
 
