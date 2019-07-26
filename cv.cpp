@@ -30,6 +30,18 @@ static int cv_detect_net(const cv::Mat bgr)
         net.setInput(blob, "data");
         pred = net.forward("prob");
         double end = cv::getTickCount()*1000/freq;
+        double t = 0.;
+        std::vector<double> layersTimes;
+        if(i == 0)
+        {
+            t = (double)net.getPerfProfile(layersTimes) * 1000 / freq;
+            fprintf(stdout, "OpenCV Time: %7.2fms\n", t);
+            for (int j = 0; j < layersTimes.size(); j++)
+            {
+                fprintf(stdout, "OpenCV %d layer Time: %7.2fms\n", j, layersTimes[j] * 1000 / freq);
+            }
+            
+        }
         double time = end - start;
         time_min = min(time_min, time);
         time_max = max(time_max, time);
