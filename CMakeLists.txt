@@ -2,6 +2,8 @@
 cmake_minimum_required(VERSION 3.0)
 project(test)
 
+message(STATUS "I am one new branch: ncnn-finger")
+
 # turn on C++11
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
