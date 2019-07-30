@@ -12,8 +12,10 @@ if(MSVC)
 
 endif()
 
-file(GLOB NCNN_INCLUDE ${CMAKE_CURRENT_LIST_DIR}/include/ncnn.hpp)
-file(GLOB NCNN_SRC ${CMAKE_CURRENT_LIST_DIR}/ncnn.cpp)
+file(GLOB NCNN_INCLUDE ${CMAKE_CURRENT_LIST_DIR}/include/ncnn.hpp ${CMAKE_CURRENT_LIST_DIR}/include/imageHelper/stb_image.h)
+file(GLOB NCNN_SRC ${CMAKE_CURRENT_LIST_DIR}/ncnn.cpp 
+                   ${CMAKE_CURRENT_LIST_DIR}/dense-opt.mem.h 
+                   ${CMAKE_CURRENT_LIST_DIR}/dense-opt.id.h)
 set(NCNN_COMPILE_CODE ${NCNN_INCLUDE} ${NCNN_SRC})
 
 add_definitions(-DNCNN_EXPORT)
