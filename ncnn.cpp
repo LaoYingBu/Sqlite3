@@ -58,12 +58,19 @@ static void img_crop_gravity(const uchar* src, const int W, const int H, const f
 //static int ncnn_detect_net(const cv::Mat& gray, std::vector<float>& cls_scores)
 static int ncnn_detect_net(const uchar* gray, const int w, const int h, std::vector<float>& cls_scores)
 {
+    ncnn::Option optional;
+    optional.lightmode = true;
+    optional.num_threads = 2;
+    optional.use_winograd_convolution = true;
+    optional.use_sgemm_convolution =true;
+    optional.use_int8_inference = true;
     ncnn::Net net;
+    net.opt = optional;
     #ifdef NCNN_VULKAN
     net.opt.use_vulkan_compute = true;
     #endif
-    net.load_param(dense_opt_param_bin);
-    net.load_model(dense_opt_bin);
+    net.load_param("dense-fp32-int8.param");
+    net.load_model("dense-fp32-int8.bin");
 
     // ncnn::Mat in = ncnn::Mat::from_pixels_resize(gray.data, ncnn::Mat::PIXEL_GRAY, gray.cols, gray.rows, 160, 160);
     // const float norm_vals[3] = {1/256.f}; 
@@ -81,9 +88,9 @@ static int ncnn_detect_net(const uchar* gray, const int w, const int h, std::vec
     for (int i = 0; i < 10; i++)
     {
         ncnn::Extractor ex = net.create_extractor();
-        ex.input(dense_opt_param_id::BLOB_data, in);
+        ex.input(0, in);
         ncnn::Mat out;
-        ex.extract(dense_opt_param_id::BLOB_prob, out);
+        ex.extract(107, out);
         // {
         //     ncnn::Layer* softmax = ncnn::create_layer("Softmax");
         //     ncnn::ParamDict pd;
@@ -95,12 +102,12 @@ static int ncnn_detect_net(const uchar* gray, const int w, const int h, std::vec
 
     double time_min = DBL_MAX, time_max = -DBL_MAX, time_ave = 0;
     ncnn::Mat out;
-    for (int i = 0; i < 100000; i++)
+    for (int i = 0; i < 10; i++)
     {
        double start = ncnn::get_current_time(); 
        ncnn::Extractor ex = net.create_extractor();
-        ex.input(dense_opt_param_id::BLOB_data, in);
-        ex.extract(dense_opt_param_id::BLOB_prob, out);
+        ex.input(0, in);
+        ex.extract(107, out);
         // {
         //     ncnn::Layer* softmax = ncnn::create_layer("Softmax");
         //     ncnn::ParamDict pd;
@@ -156,11 +163,6 @@ int ncnn_demo(char* filename)
     ncnn::create_gpu_instance();
     #endif
 
-    ncnn::Option opt;
-    opt.lightmode = true;
-    opt.num_threads = 2;
-    opt.use_winograd_convolution = true;
-    opt.use_sgemm_convolution =true;
 
     std::vector<float> cls_scores;
     //ncnn_detect_net(im, cls_scores);
