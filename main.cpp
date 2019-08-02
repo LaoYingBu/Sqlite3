@@ -23,10 +23,15 @@
 //     return 0;
 // }
 
-int main()
+int main(int argc, char** argv)
 {
-    char* filename = "finger.bmp";
-    ncnn_demo(filename);
+    char* ifilename = "in.txt";
+    char* ofilename = "out.txt";
+    if(argc == 3){
+        ifilename = argv[1];
+        ofilename = argv[2];
+    }
+    ncnn_demo(ifilename, ofilename);
     fprintf(stdout, "ncnn dll loaded successfully!\n");
     system("pause");
     return 0;
